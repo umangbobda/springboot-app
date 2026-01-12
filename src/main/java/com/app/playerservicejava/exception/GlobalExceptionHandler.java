@@ -161,7 +161,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(AiModelException.class)
     public ResponseEntity<ErrorResponse> handleAiModelException(AiModelException ex) {
-        LOGGER.error("Ai service is unavailable ",ex);
+        LOGGER.error("Ai service is unavailable. ",ex);
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.SERVICE_UNAVAILABLE.value(),
                 HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase(),

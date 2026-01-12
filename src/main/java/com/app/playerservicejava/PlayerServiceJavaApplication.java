@@ -11,5 +11,4 @@ public class PlayerServiceJavaApplication {
     public static void main(String[] args) {
         SpringApplication.run(PlayerServiceJavaApplication.class, args);
     }
-
 }

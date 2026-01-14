@@ -1,0 +1,26 @@
+services:
+  tinyllama:
+    image: ollama/ollama:latest
+    container_name: tinyllama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    entrypoint: ["sh", "-c", "ollama run tinyllama"]
+    restart: unless-stopped
+
+  demo-player:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: player-demo:latest
+    container_name: demo-player
+    ports:
+      - "8080:8080"
+    environment:
+      OLLAMA_BASE_URL: http://tinyllama:11434
+    depends_on:
+      - tinyllama
+
+volumes:
+  ollama-data:

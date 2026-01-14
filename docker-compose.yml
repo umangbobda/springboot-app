@@ -6,7 +6,20 @@ services:
       - "11434:11434"
     volumes:
       - ollama-data:/root/.ollama
-    entrypoint: ["sh", "-c", "ollama run tinyllama"]
+    #entrypoint: ["sh", "-c"]
+    #auto pull the tinyllama model
+    entrypoint: [ "/bin/bash", "-c" ]
+    command: >
+      "ollama serve &
+      pid=$!;
+      sleep 15;
+      ollama pull tinyllama;
+      wait $pid"
+    healthcheck:
+      test: [ "CMD", "ollama", "list" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
   demo-player:
@@ -20,7 +33,8 @@ services:
     environment:
       OLLAMA_BASE_URL: http://tinyllama:11434
     depends_on:
-      - tinyllama
+      tinyllama:
+         condition: service_healthy
 
 volumes:
   ollama-data:

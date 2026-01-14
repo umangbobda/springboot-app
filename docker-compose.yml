@@ -23,6 +23,7 @@ services:
     restart: unless-stopped
 
   demo-player:
+    #build is needed to alwaya pick new jar and create new image
     build:
       context: .
       dockerfile: Dockerfile
@@ -32,6 +33,9 @@ services:
       - "8080:8080"
     environment:
       OLLAMA_BASE_URL: http://tinyllama:11434
+      SPRING_DATASOURCE_URL: jdbc:mysql://playerdb.cr2a6qa480f7.us-east-2.rds.amazonaws.com:3306/playerdb?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: password
     depends_on:
       tinyllama:
          condition: service_healthy

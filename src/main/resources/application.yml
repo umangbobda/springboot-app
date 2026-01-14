@@ -1,20 +1,18 @@
 spring:
   datasource:
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
-    url: jdbc:h2:mem:playerdb
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: root  # Change to your MySQL username
+    password:  # Change to your MySQL password
+    url: jdbc:mysql://localhost:3306/playerdb?useSSL=false&serverTimezone=UTC
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
+    show-sql: true  # Optional: to see SQL queries in logs
   config:
     use-legacy-processing: true
-  h2:
-    console:
-      enabled: true
 
 server:
   port: 8080
@@ -22,4 +20,6 @@ server:
   error:
     include-message: always
 
-
+#    export SPRING_DATASOURCE_URL="jdbc:mysql://localhost:3306/playerdb?useSSL=false&serverTimezone=UTC"
+#    export SPRING_DATASOURCE_USERNAME="root"
+#    export SPRING_DATASOURCE_PASSWORD=""

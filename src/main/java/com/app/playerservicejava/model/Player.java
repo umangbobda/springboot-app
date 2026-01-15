@@ -6,7 +6,7 @@ import lombok.ToString;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="PLAYERS")
+@Table(name="players")
 @ToString
 public class Player {
 

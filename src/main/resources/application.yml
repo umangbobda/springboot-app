@@ -1,12 +1,12 @@
 spring:
   datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
-    username: root  # Change to your MySQL username
-    password:  # Change to your MySQL password
-    url: jdbc:mysql://localhost:3306/playerdb?useSSL=false&serverTimezone=UTC
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -19,7 +19,3 @@ server:
   include-debug-info: true
   error:
     include-message: always
-
-#    export SPRING_DATASOURCE_URL="jdbc:mysql://localhost:3306/playerdb?useSSL=false&serverTimezone=UTC"
-#    export SPRING_DATASOURCE_USERNAME="root"
-#    export SPRING_DATASOURCE_PASSWORD=""

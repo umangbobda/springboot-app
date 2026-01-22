@@ -47,5 +47,8 @@ public class AiJob {
 
     @Column(name = "updated_at", insertable = false)
     private LocalDateTime updatedAt;
+
+    @Column(name = "retry_count", nullable = false)
+    private Integer retryCount = 0; // NEW FIELD: tracks number of retries
 }
 

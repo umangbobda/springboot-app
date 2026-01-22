@@ -19,3 +19,10 @@ server:
   include-debug-info: true
   error:
     include-message: always
+
+aws:
+  sqs:
+    endpoint: http://sqs.us-east-1.localhost.localstack.cloud:4566
+    queue:
+      url: http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/ai-job-queue
+  region: us-east-1

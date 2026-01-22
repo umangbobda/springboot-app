@@ -4,7 +4,10 @@ import com.app.playerservicejava.dto.*;
 import com.app.playerservicejava.exception.InvalidRequestParameterException;
 import com.app.playerservicejava.model.Player;
 import com.app.playerservicejava.model.Players;
+import com.app.playerservicejava.service.AiJobQueryService;
+import com.app.playerservicejava.service.AiJobService;
 import com.app.playerservicejava.service.PlayerService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,6 +26,12 @@ import java.util.Optional;
 public class PlayerController {
     @Autowired
     private PlayerService playerService;
+
+    @Autowired
+    private AiJobService aiJobService;
+
+    @Autowired
+    private AiJobQueryService aiJobQueryService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<Players> getPlayers() {
@@ -215,5 +224,42 @@ public class PlayerController {
     @PatchMapping("/{id}")
     public ResponseEntity<PlayerResponse> patch(@PathVariable String id, @RequestBody PlayerPatchRequest req) {
         return ResponseEntity.ok(playerService.patch(id, req));
+    }
+
+    @PostMapping("/insights/players/async")
+    public ResponseEntity<JobResponse> getPlayerInsightsAsync(
+            @RequestBody List<String> playerIds) {
+
+        Long jobId = aiJobService.createPlayerInsightsJob(playerIds);
+
+        return ResponseEntity.accepted()
+                .body(new JobResponse(
+                        jobId,
+                        "PENDING",
+                        "/ai/jobs/" + jobId
+                ));
+
+    }
+
+    @PostMapping("/ai/query/async")
+    public ResponseEntity<JobResponse> freeTextQueryAsync(
+            @RequestBody String query) {
+
+        Long jobId = aiJobService.createFreeTextJob(query);
+
+        return ResponseEntity.accepted()
+                .body(new JobResponse(
+                        jobId,
+                        "PENDING",
+                        "/ai/jobs/" + jobId
+                ));
+
+    }
+
+     @GetMapping("/ai/jobs/{jobId}")
+     public ResponseEntity<JobStatusResponse> getJobStatus(
+                @PathVariable Long jobId) {
+
+            return ResponseEntity.ok(aiJobQueryService.getJobStatus(jobId));
     }
 }

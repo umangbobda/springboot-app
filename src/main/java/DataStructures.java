@@ -99,6 +99,7 @@ public class DataStructures {
 		//Arrays
 		int arr[] = new int[10];
 		int arrVal[] = {1,2,3};
+		int arrVal2[] = new int[] {1,3,5};
 		int arr2d[][] = new int [5][5];
 		int rows = arr2d.length;
 		int cols = arr2d[0].length;
@@ -192,6 +193,8 @@ public class DataStructures {
 													put("b",2);
 												}
 											};
+		Map<String, List<String>> map2 = new HashMap<>();
+		map2.computeIfAbsent("key", k -> new ArrayList<>()).add("val1");
 		Map<String, String> map = Map.of("key1","value1", "key2", "value2"); // immutable maps , max 10
 		String key = "a";
 		hashMap.put("c", 3);

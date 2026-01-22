@@ -203,4 +203,21 @@ public class GlobalExceptionHandler {
                 ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
+
+    /**
+     * Handles the exception when there is no ai job data found.
+     *
+     * @param ex the exception that was thrown during request processing
+     * @return a {@link ResponseEntity} containing an {@link ErrorResponse} object with
+     *         the error message and HTTP status code 404
+     */
+    @ExceptionHandler(JobNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(JobNotFoundException ex) {
+        LOGGER.warn("Job not found : {}", ex.getMessage());
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
 }

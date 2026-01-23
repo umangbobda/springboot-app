@@ -6,7 +6,6 @@ services:
       - "11434:11434"
     volumes:
       - ollama-data:/root/.ollama
-    #entrypoint: ["sh", "-c"]
     #auto pull the tinyllama model
     entrypoint: [ "/bin/bash", "-c" ]
     command: >
@@ -23,7 +22,7 @@ services:
     restart: unless-stopped
 
   demo-player:
-    #build is needed to alwaya pick new jar and create new image
+    #build is needed to always pick new jar and create new image
     build:
       context: .
       dockerfile: Dockerfile

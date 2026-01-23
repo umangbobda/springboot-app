@@ -46,7 +46,7 @@ public class AiJobWorker {
             int receiveCount = (rawCount != null) ? Integer.parseInt(rawCount) : 1;
 
             try {
-                log.info("Processing job {} (SQS Attempt {})", jobId, receiveCount);
+                log.info("Processing job {}  messageId={} (SQS Attempt {})", jobId,msg.messageId(), receiveCount);
 
                 // Execute synchronously relative to the poller
                 aiService.processJob(jobId);
@@ -69,7 +69,7 @@ public class AiJobWorker {
                             .build());
                 } else {
                     log.warn("Job {} failed attempt {}. Letting SQS retry.", jobId, receiveCount);
-                    statusService.updateStatus(jobId, JobStatus.PENDING);
+                    //statusService.updateStatus(jobId, JobStatus.PENDING);
                     // Do NOT delete. Do NOT mark as FAILED yet.
                     // SQS visibility timeout will expire and it will try again.
                 }

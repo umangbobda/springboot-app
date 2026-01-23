@@ -7,30 +7,37 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsClient;
+import software.amazon.awssdk.services.sqs.SqsClientBuilder;
 
 import java.net.URI;
 
 @Configuration
 public class SqsConfig {
 
-    // sqsEndpoint will be injected with value from properties, or default to http://localhost:4566
-    @Value("${aws.sqs.endpoint:http://localhost:4566}")
-    private String sqsEndpoint;
-
-    @Value("${aws.region:us-east-1}")
+    @Value("${aws.region}")
     private String region;
+
+    @Value("${aws.sqs.endpoint:}") // read form application yml config and load the value
+    private String sqsEndpoint; // empty on AWS
 
     @Bean
     public SqsClient sqsClient() {
-        return SqsClient.builder()
-                .endpointOverride(URI.create(sqsEndpoint))
-                .region(Region.of(region))
-                .credentialsProvider(
-                        StaticCredentialsProvider.create(
-                                AwsBasicCredentials.create("dummy", "dummy")
-                        )
-                )
-                .build();
+        SqsClientBuilder builder = SqsClient.builder()
+                .region(Region.of(region));
+
+        // LocalStack only
+        if (sqsEndpoint != null && !sqsEndpoint.isBlank()) {
+            builder.endpointOverride(URI.create(sqsEndpoint))
+                    .credentialsProvider(
+                            StaticCredentialsProvider.create(
+                                    AwsBasicCredentials.create("dummy", "dummy")
+                            )
+                    );
+        }
+        // AWS: no endpoint, no credentials config
+
+        return builder.build();
     }
 }
+
 

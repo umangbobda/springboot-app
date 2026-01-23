@@ -31,6 +31,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://playerdb.cr2a6qa480f7.us-east-2.rds.amazonaws.com:3306/playerdb?useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: password
+      AWS_REGION: us-east-2
+      SQS_QUEUE_URL: https://sqs.us-east-2.amazonaws.com/363934771953/ai-job-queue
     depends_on:
       tinyllama:
         condition: service_healthy

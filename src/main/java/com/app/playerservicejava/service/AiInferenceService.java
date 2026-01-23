@@ -30,7 +30,7 @@ public class AiInferenceService { // Renamed: no longer "Async" service
                 .orElseThrow(() -> new RuntimeException("Job not found: " + jobId));
 
         // 1 IDEMPOTENCY CHECK
-        if (job.getStatus() == JobStatus.COMPLETED) {
+        if (job.getStatus() == JobStatus.COMPLETED || job.getStatus() == JobStatus.FAILED) {
             log.info("Job {} already running or completed. Skipping AI call.", jobId);
             return;
         }
@@ -46,7 +46,7 @@ public class AiInferenceService { // Renamed: no longer "Async" service
             result = chatClientService.chatWithPrompt(job.getInputText());
         }
 
-        // 3. Complete
+        // 3. Complete here or in worker is also fine
         statusService.markAsCompleted(jobId, result);
     }
 }

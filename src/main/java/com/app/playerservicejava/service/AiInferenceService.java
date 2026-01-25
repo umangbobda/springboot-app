@@ -39,18 +39,12 @@ public class AiInferenceService {
 
         // 4 Execute the AI or Player logic OUTSIDE transaction
         String result;
-        try {
-            if (job.getRequestType() == RequestType.PLAYER_ANALYSIS) {
-                List<String> playerIds = Arrays.stream(job.getInputText().split(","))
-                        .map(String::trim).toList();
-                result = playerService.getInsightsforPlayers(playerIds); // external call
-            } else {
-                result = chatClientService.chatWithPrompt(job.getInputText()); // HTTP call
-            }
-        } catch (Exception e) {
-            log.error("AI call failed for job {}: {}", jobId, e.getMessage(), e);
-            statusService.markAsFailed(jobId, e.getMessage());
-            return;
+        if (job.getRequestType() == RequestType.PLAYER_ANALYSIS) {
+            List<String> playerIds = Arrays.stream(job.getInputText().split(","))
+                    .map(String::trim).toList();
+            result = playerService.getInsightsforPlayers(playerIds); // external call
+        } else {
+            result = chatClientService.chatWithPrompt(job.getInputText()); // HTTP call
         }
 
         // 5 Save the result in a short transaction

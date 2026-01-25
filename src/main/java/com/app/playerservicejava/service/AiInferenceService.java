@@ -16,37 +16,62 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor //lombok to creare noarg constructor to initialize all the services
 @Slf4j //lombok - no need to create logger line , directly use log.error()..etcc
-public class AiInferenceService { // Renamed: no longer "Async" service
+public class AiInferenceService {
 
     private final AiJobRepository jobRepo;
     private final PlayerService playerService;
     private final ChatClientService chatClientService;
     private final JobStatusService statusService;
 
-    // Remove @Async. The SQS poller provides the concurrency.
-    @Transactional
+    // Main entry called by pollQueue / SQS worker
     public void processJob(Long jobId) {
-        AiJob job = jobRepo.findById(jobId)
-                .orElseThrow(() -> new RuntimeException("Job not found: " + jobId));
+        // 1 Fetch job quickly in a short transaction
+        AiJob job = fetchJob(jobId);
 
-        // 1 IDEMPOTENCY CHECK
+        // 2 Idempotency check
         if (job.getStatus() == JobStatus.COMPLETED || job.getStatus() == JobStatus.FAILED) {
             log.info("Job {} already running or completed. Skipping AI call.", jobId);
             return;
         }
 
-        statusService.updateStatus(jobId, JobStatus.RUNNING); //update the status
-        // 2. Execute Logic
+        // 3 Mark as RUNNING in a short transaction
+        updateStatusRunning(jobId);
+
+        // 4 Execute the AI or Player logic OUTSIDE transaction
         String result;
-        if (job.getRequestType() == RequestType.PLAYER_ANALYSIS) {
-            List<String> playerIds = Arrays.stream(job.getInputText().split(","))
-                    .map(String::trim).toList();
-            result = playerService.getInsightsforPlayers(playerIds);
-        } else {
-            result = chatClientService.chatWithPrompt(job.getInputText());
+        try {
+            if (job.getRequestType() == RequestType.PLAYER_ANALYSIS) {
+                List<String> playerIds = Arrays.stream(job.getInputText().split(","))
+                        .map(String::trim).toList();
+                result = playerService.getInsightsforPlayers(playerIds); // external call
+            } else {
+                result = chatClientService.chatWithPrompt(job.getInputText()); // HTTP call
+            }
+        } catch (Exception e) {
+            log.error("AI call failed for job {}: {}", jobId, e.getMessage(), e);
+            statusService.markAsFailed(jobId, e.getMessage());
+            return;
         }
 
-        // 3. Complete here or in worker is also fine
+        // 5 Save the result in a short transaction
+        markJobCompleted(jobId, result);
+    }
+
+    // ---------------- DB helper methods ----------------
+
+    @Transactional
+    protected AiJob fetchJob(Long jobId) {
+        return jobRepo.findById(jobId)
+                .orElseThrow(() -> new JobNotFoundException("Job not found while processing job: " + jobId));
+    }
+
+    @Transactional
+    protected void updateStatusRunning(Long jobId) {
+        statusService.updateStatus(jobId, JobStatus.RUNNING);
+    }
+
+    @Transactional
+    protected void markJobCompleted(Long jobId, String result) {
         statusService.markAsCompleted(jobId, result);
     }
 }

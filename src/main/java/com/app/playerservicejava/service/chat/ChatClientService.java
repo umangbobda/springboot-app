@@ -8,7 +8,6 @@ import io.github.ollama4j.models.OllamaResult;
 import io.github.ollama4j.types.OllamaModelType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import io.github.ollama4j.utils.OptionsBuilder;
 import io.github.ollama4j.utils.PromptBuilder;
@@ -32,6 +31,7 @@ public class ChatClientService {
         );
         LOGGER.info("Base URL ========= {}", baseURL);
         this.ollamaAPI = new OllamaAPI(baseURL);
+        this.ollamaAPI.setRequestTimeoutSeconds(120);
     }
 
     public List<Model> listModels() throws OllamaBaseException, IOException, URISyntaxException, InterruptedException {

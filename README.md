@@ -23,9 +23,6 @@ Player Service is a backend application that serves baseball player data. In add
       - Download and install from [docker.com](https://www.docker.com/)(recommended) or [podman](https://podman.io/) (alternative)
       - Verify installation, run: `docker --version` for docker
 
-2. Clone this repository or Download the code as zip
-   - run `git clone https://github.com/Intuit-A4A/backend-java-player-service.git`
-
 ## Run the application
 
 ### Part 1: Application Dependencies
@@ -76,7 +73,6 @@ Player service integrates with Ollama 🦙, which allows us to run LLMs locally.
     ```curl
     curl -v --location 'http://localhost:11434/api/generate' --header 'Content-Type: application/json' --data '{"model": "tinyllama","prompt": "why is the sky blue?", "stream": false}'
     ```
-Having trouble with docker? Try using podman as an alternative. Instructions [here](https://github.com/Intuit-A4A/backend-java-player-service/wiki/Supplemental-Materials:-Set-up-help#alternative-set-up-instructions)
 
 
 ### Part 4: Verify Player Service and LLM Integration

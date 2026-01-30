@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -41,6 +42,8 @@ public class AiJobService {
                 .requestType(RequestType.PLAYER_ANALYSIS)
                 .inputText(String.join(",", playerIds))
                 .status(JobStatus.PENDING)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .retryCount(0)
                 .build();
         jobRepo.save(job);
@@ -63,6 +66,7 @@ public class AiJobService {
         job.setStatus(JobStatus.PENDING);
         job.setRetryCount(0);
 
+
         jobRepo.save(job);
         aiInferenceServiceService.processJob(job.getId());
 
@@ -75,6 +79,8 @@ public class AiJobService {
                 .requestType(RequestType.FREE_TEXT)
                 .inputText(text)
                 .status(JobStatus.PENDING)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .retryCount(0)
                 .build();
         jobRepo.save(job);

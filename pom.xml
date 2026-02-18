@@ -61,7 +61,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.32</version> <!-- make sure to add the version -->
+            <version>1.18.38</version> <!-- Java 24 compatibility (fixes TypeTag UNKNOWN) -->
             <scope>provided</scope>
         </dependency>
 
@@ -106,7 +106,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.32</version>
+                            <version>1.18.38</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

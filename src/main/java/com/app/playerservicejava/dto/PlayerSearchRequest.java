@@ -1,5 +1,6 @@
 package com.app.playerservicejava.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.lang.NonNull;
 
@@ -7,6 +8,7 @@ import org.springframework.lang.NonNull;
 public class PlayerSearchRequest {
 
     @NonNull
+    @NotNull
     private String birthCountry;
     private String birthCity;
     @NonNull

@@ -1,7 +1,7 @@
 package com.app.playerservicejava.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.antlr.v4.runtime.misc.NotNull;
 
 @Data
 public class PlayerUpdateRequest {

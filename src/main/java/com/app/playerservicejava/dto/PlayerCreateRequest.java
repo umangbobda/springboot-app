@@ -1,13 +1,14 @@
 package com.app.playerservicejava.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.lang.NonNull;
 
 @Data
 public class PlayerCreateRequest {
 
     @NonNull
+    @NotNull
     private String playerId;
 
     @NonNull
@@ -16,6 +17,7 @@ public class PlayerCreateRequest {
     @NonNull
     private String lastName;
 
+    @NotNull
     private String birthCountry;
     private String birthCity;
     private String throwsHand;

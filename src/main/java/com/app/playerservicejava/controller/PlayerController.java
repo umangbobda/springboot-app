@@ -7,6 +7,7 @@ import com.app.playerservicejava.model.Players;
 import com.app.playerservicejava.service.AiJobQueryService;
 import com.app.playerservicejava.service.AiJobService;
 import com.app.playerservicejava.service.PlayerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -128,7 +129,7 @@ public class PlayerController {
     }
 
     @PostMapping("/batchByCoutry")
-    public ResponseEntity<Players> getPlayersByIdsAndCountryPost(@Validated @RequestBody PlayerBatchRequest pbr) {
+    public ResponseEntity<Players> getPlayersByIdsAndCountryPost(@Valid @RequestBody PlayerBatchRequest pbr) {
 
         if (pbr.getPlayersIds().isEmpty()) {
             throw new InvalidRequestParameterException("Player ids cannot be empty");
@@ -204,7 +205,7 @@ public class PlayerController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<Players> getPlayersWithSearch(@Validated  @RequestBody PlayerSearchRequest psr){
+    public ResponseEntity<Players> getPlayersWithSearch(@Valid @RequestBody PlayerSearchRequest psr){
 
         return ResponseEntity.ok(playerService.getPlayersWithSearchParam(psr));
     }
@@ -212,12 +213,12 @@ public class PlayerController {
     //ADDING UPDATING
 
     @PostMapping
-    public ResponseEntity<PlayerResponse> create(@Validated @RequestBody PlayerCreateRequest req) {
+    public ResponseEntity<PlayerResponse> create(@Valid @RequestBody PlayerCreateRequest req) {
         return ResponseEntity.status(HttpStatus.CREATED).body(playerService.create(req));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PlayerResponse> update(@PathVariable String id, @Validated @RequestBody PlayerUpdateRequest req) {
+    public ResponseEntity<PlayerResponse> update(@PathVariable String id, @Valid @RequestBody PlayerUpdateRequest req) {
         return ResponseEntity.ok(playerService.update(id, req));
     }
 

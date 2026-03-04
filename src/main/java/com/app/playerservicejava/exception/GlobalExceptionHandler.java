@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -54,6 +55,22 @@ public class GlobalExceptionHandler {
         LOGGER.warn("Invalid parameter type: {}", ex.getMessage());
         String paramName = ex.getName();
         String message = String.format("Invalid value "+ex.getValue()+" for parameter " + paramName);
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST.getReasonPhrase(), message);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    /**
+     * Handles the exception when @Valid fails for Request body.
+     *
+     * @param ex the exception that was thrown during request processing
+     * @return a {@link ResponseEntity} containing an {@link ErrorResponse} object with
+     *         the error message and HTTP status code 400
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        LOGGER.warn("Invalid method arguments type: {}", ex.getMessage());
+        String message = String.format("Invalid method arguments "+ ex.getMessage());
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST.getReasonPhrase(), message);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
